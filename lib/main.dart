@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'presentation/auth_feature/pages/login_page.dart';
 
 
-void main() {
+void main() async{
+  await Hive.initFlutter();
+  await Hive.openBox('apexDMIT');
   runApp(const MyApp());
 }
 
