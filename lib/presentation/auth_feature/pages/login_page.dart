@@ -1,5 +1,6 @@
 
 
+import 'package:apexdmit_noor_alam_abir/domain_infrastructure/auth/auth_dom_i.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -152,9 +153,9 @@ class LoginPage extends HookConsumerWidget {
                           Bounce(
                             duration: Duration(milliseconds: 300),
                             onPressed: (){
-
-                              print('>>> email - ${email.value}');
-                              print('>>> pass - ${pass.value}');
+                              Auth_Dom_I().loginUser(email.value, pass.value).then((onValue){
+                                print(onValue);
+                              });
                             },
                             child: Container(
                               width: double.infinity,

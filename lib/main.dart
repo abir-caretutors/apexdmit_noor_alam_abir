@@ -1,3 +1,5 @@
+import 'package:apexdmit_noor_alam_abir/domain_infrastructure/core/dependecy_container.dart';
+import 'package:apexdmit_noor_alam_abir/presentation/home_feature/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -6,6 +8,7 @@ import 'presentation/auth_feature/pages/login_page.dart';
 
 
 void main() async{
+  setup();
   await Hive.initFlutter();
   await Hive.openBox('apexDMIT');
   runApp(const MyApp());
