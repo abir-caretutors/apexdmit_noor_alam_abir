@@ -14,8 +14,11 @@ class SetUserLocalStorageV2 {
 
   void isLogin(bool value) => storingDataInBox(UserStorageKey.isLogin, value);
 
+  void token(String value) => storingDataInBox(UserStorageKey.token, value);
+
   void clearUser() {
     box.delete(UserStorageKey.isLogin);
+    box.delete(UserStorageKey.token);
   }
 
   void clear() => box.clear();
@@ -24,6 +27,7 @@ class SetUserLocalStorageV2 {
 class GetUserLocalStorageV2 {
   final box = Hive.box(UserStorageKey.mainBox);
   bool? isLogin() => box.get(UserStorageKey.isLogin);
+  String? token() => box.get(UserStorageKey.token);
 
 }
 
@@ -31,6 +35,8 @@ class UserStorageKey {
   static String get mainBox => "apexDMIT";
 
   static String get isLogin => "isLogin";
+
+  static String get token => "token";
 
 
 }

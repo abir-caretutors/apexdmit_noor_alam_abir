@@ -1,11 +1,14 @@
 
 
+import 'package:apexdmit_noor_alam_abir/data/local/local_storage.dart';
 import 'package:apexdmit_noor_alam_abir/domain_infrastructure/auth/auth_dom_i.dart';
+import 'package:apexdmit_noor_alam_abir/presentation/home_feature/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+final loadingProvider = StateProvider<bool>((ref) => false);
 
 class LoginPage extends HookConsumerWidget {
   const LoginPage({super.key});
@@ -150,26 +153,41 @@ class LoginPage extends HookConsumerWidget {
                             ],
                           ),
                           SizedBox(height: width * 0.05,),
-                          Bounce(
-                            duration: Duration(milliseconds: 300),
-                            onPressed: (){
-                              Auth_Dom_I().loginUser(email.value, pass.value).then((onValue){
-                                print(onValue);
-                              });
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              height: height * 0.06,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Color(0xFF2C6CE9),
-                                borderRadius: BorderRadius.circular(width * 0.04),
-                              ),
-                              child: Text(
-                                "Log In",
-                                style: TextStyle(color: Colors.white, fontSize: width * 0.05),
-                              ),
-                            ),
+                          Consumer(
+                            builder: (context, ref, child) {
+                              final isLoading = ref.watch(loadingProvider);
+                              return Bounce(
+                                duration: Duration(milliseconds: 300),
+                                onPressed: (){
+                                    Auth_Dom_I().loginUser(email.value, pass.value, context).then((onValue){
+                                      SetUserLocalStorageV2().isLogin(true);
+                                      SetUserLocalStorageV2().token(onValue.accessToken);
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => HomePage()),
+                                      );
+                                    });
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  height: height * 0.06,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF2C6CE9),
+                                    borderRadius: BorderRadius.circular(width * 0.04),
+                                  ),
+                                  child: isLoading ?
+                                      Padding(
+                                        padding: const EdgeInsets.all(3.0),
+                                        child: CircularProgressIndicator(color: Colors.white),
+                                      )
+                                  : Text(
+                                    "Log In",
+                                    style: TextStyle(color: Colors.white, fontSize: width * 0.05),
+                                  ),
+                                ),
+                              );
+                            }
                           ),
                           SizedBox(height: width * 0.08,),
                           Center(

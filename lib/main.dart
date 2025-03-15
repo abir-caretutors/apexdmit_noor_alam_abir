@@ -1,3 +1,4 @@
+import 'package:apexdmit_noor_alam_abir/data/local/local_storage.dart';
 import 'package:apexdmit_noor_alam_abir/domain_infrastructure/core/dependecy_container.dart';
 import 'package:apexdmit_noor_alam_abir/presentation/home_feature/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: LoginPage(),
+        home: (GetUserLocalStorageV2().isLogin()==true) ? HomePage() : LoginPage(),
       ),
     );
   }
