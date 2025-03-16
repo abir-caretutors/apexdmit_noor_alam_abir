@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 class GetMaterialResponse {
-  String statusCode;
-  String statusMessage;
-  MaterialPurchaseList materialPurchaseList;
+  String? statusCode;
+  String? statusMessage;
+  MaterialPurchaseList? materialPurchaseList;
 
   GetMaterialResponse({
     required this.statusCode,
@@ -35,24 +35,24 @@ class GetMaterialResponse {
   Map<String, dynamic> toJson() => {
     "status_code": statusCode,
     "status_message": statusMessage,
-    "material_purchase_list": materialPurchaseList.toJson(),
+    "material_purchase_list": materialPurchaseList?.toJson(),
   };
 }
 
 class MaterialPurchaseList {
-  int currentPage;
-  List<Datum> data;
-  String firstPageUrl;
-  int from;
-  int lastPage;
-  String lastPageUrl;
-  List<Link> links;
-  dynamic nextPageUrl;
-  String path;
-  int perPage;
-  dynamic prevPageUrl;
-  int to;
-  int total;
+  int? currentPage;
+  List<Datum>? data;
+  String? firstPageUrl;
+  int? from;
+  int? lastPage;
+  String? lastPageUrl;
+  List<Link>? links;
+  dynamic? nextPageUrl;
+  String? path;
+  int? perPage;
+  dynamic? prevPageUrl;
+  int? to;
+  int? total;
 
   MaterialPurchaseList({
     required this.currentPage,
@@ -123,12 +123,12 @@ class MaterialPurchaseList {
 
   Map<String, dynamic> toJson() => {
     "current_page": currentPage,
-    "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    "data": List<dynamic>.from(data!.map((x) => x.toJson())),
     "first_page_url": firstPageUrl,
     "from": from,
     "last_page": lastPage,
     "last_page_url": lastPageUrl,
-    "links": List<dynamic>.from(links.map((x) => x.toJson())),
+    "links": List<dynamic>.from(links!.map((x) => x.toJson())),
     "next_page_url": nextPageUrl,
     "path": path,
     "per_page": perPage,

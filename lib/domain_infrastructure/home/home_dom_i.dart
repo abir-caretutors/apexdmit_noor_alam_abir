@@ -15,7 +15,6 @@ class Home_Dom_I {
     final headers = {
       "Authorization": "bearer $token",
     };
-    print(headers);
     var response = await apiService.get(APIUrls.product, context, headers: headers);
     return GetMaterialResponse.fromJson(response);
   }

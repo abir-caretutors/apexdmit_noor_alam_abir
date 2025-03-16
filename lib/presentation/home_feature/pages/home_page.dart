@@ -3,6 +3,8 @@
 import 'package:apexdmit_noor_alam_abir/data/local/local_storage.dart';
 import 'package:apexdmit_noor_alam_abir/data/remote/responses/get_material_response.dart';
 import 'package:apexdmit_noor_alam_abir/domain_infrastructure/home/home_dom_i.dart';
+import 'package:apexdmit_noor_alam_abir/presentation/home_feature/widgets/popup.dart';
+import 'package:apexdmit_noor_alam_abir/presentation/home_feature/widgets/table.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
@@ -18,7 +20,7 @@ class HomePage extends HookConsumerWidget {
 
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    dynamic purchases;
+    final purchases = useState(GetMaterialResponse(statusCode: '', statusMessage: '', materialPurchaseList: null));
 
     var suggestions = [
       'United States', 'Germany', 'Canada', 'United Kingdom', 'France', 'Italy', 'Spain', 'Australia', 'India', 'China', 'Japan', 'Brazil', 'South Africa', 'Mexico', 'Argentina', 'Russia', 'Indonesia', 'Turkey', 'Saudi Arabia', 'Nigeria', 'Egypt',
@@ -29,25 +31,29 @@ class HomePage extends HookConsumerWidget {
     );
     FocusNode focus = FocusNode();
 
-    print('>>>> Access Token: ${GetUserLocalStorageV2().token()}');
-
     useEffect(() {
       Future.microtask(() {
-       Home_Dom_I().getProducts(GetUserLocalStorageV2().token().toString(), context).then((onValue){
-         purchases = onValue;
-       });
+         Home_Dom_I().getProducts(GetUserLocalStorageV2().token().toString(), context).then((onValue){
+           purchases.value = onValue;
+           print(purchases);
+         });
       });
       return null;
     },[]);
+
+    void _showPopup(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (context) => MaterialPurchaseDialog(),
+      );
+    }
 
     return SafeArea(
         child: Scaffold(
           floatingActionButton: FloatingActionButton(
 
             backgroundColor: Color(0xFF2567E8),
-              onPressed: (){
-
-              },
+              onPressed: (() => _showPopup(context)),
             child: Icon(Icons.add_circle, color: Colors.white,),
           ),
           body: Column(
@@ -154,31 +160,10 @@ class HomePage extends HookConsumerWidget {
                   height: height * 0.6,
                   width: double.infinity,
                   //color: Colors.grey,
-                  child: DataTable2(
-                      columnSpacing: 12,
-                      horizontalMargin: 12,
-                      minWidth: 600,
-                    columns: [
-                      DataColumn(label: Text('ID')),
-                      DataColumn(label: Text('Item Name')),
-                      DataColumn(label: Text('Store')),
-                      DataColumn(label: Text('Runners Name')),
-                      DataColumn(label: Text('Amount')),
-                      DataColumn(label: Text('Card Number')),
-                      DataColumn(label: Text('Transaction Date')),
-                    ],
-                    rows: purchases.map((purchase) {
-                      return DataRow(cells: [
-                        DataCell(Text(purchase.id.toString())),
-                        DataCell(Text(purchase.lineItemName)),
-                        DataCell(Text(purchase.store)),
-                        DataCell(Text(purchase.runnersName)),
-                        DataCell(Text(purchase.amount.toString())),
-                        DataCell(Text(purchase.cardNumber)),
-                        DataCell(Text(purchase.transactionDate)),
-                      ]);
-                    }).toList(),
-                ),
+                  child: CustomHorizontalDataTable(
+                    purchases: purchases, // Provide the data for purchases
+                    height: MediaQuery.of(context).size.height, // Pass the height for sizing
+                  ),
               ),),
 
             ],
@@ -186,9 +171,4 @@ class HomePage extends HookConsumerWidget {
         )
     );
   }
-  List<DataColumn> get _columns => [
-    DataColumn(label: Text('Name')),
-    DataColumn(label: Text('Age')),
-    DataColumn(label: Text('Email')),
-  ];
 }
