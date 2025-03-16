@@ -1,12 +1,75 @@
 import 'dart:ui';
+import 'package:apexdmit_noor_alam_abir/data/local/local_storage.dart';
+import 'package:apexdmit_noor_alam_abir/domain_infrastructure/home/home_dom_i.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 
-class MaterialPurchaseDialog extends StatelessWidget {
+
+class MaterialPurchaseDialog extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+
+    final item = useState('');
+    final store = useState('');
+    final runner_name = useState('');
+    final amount = useState('');
+    final card_no = useState('');
+    final date = useState('${DateFormat('yyyy-MM-dd').format(DateTime.now())}');
+    TextEditingController controller = TextEditingController();
+    controller.text = date.value;
+
+
+    Widget _buildDateField(BuildContext context) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 6),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center, // Align items in the center
+          children: [
+            // Label with fixed width
+            SizedBox(
+              width: 120, // Adjust width to match other labels
+              child: Text(
+                "Date*",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(width: 10), // Space between label and text field
+            // Expandable TextField
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  suffixIcon: Icon(Icons.calendar_month_outlined), // Calendar icon
+                ),
+                readOnly: true,
+                controller: controller,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.tryParse(date.value),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                  );
+                  if (pickedDate != null) {
+                    //print(pickedDate.toLocal().toString().split(' ')[0]);
+                    String formattedDate = DateFormat('MM-dd-yyyy').format(pickedDate);
+                    controller.text = formattedDate;
+                    date.value = formattedDate;
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
 
     return Stack(
       children: [
@@ -52,11 +115,21 @@ class MaterialPurchaseDialog extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: height * 0.02),
-                  _buildTextField("Items*"),
-                  _buildTextField("Store*"),
-                  _buildTextField("Runner's Name*"),
-                  _buildTextField("Amount*"),
-                  _buildTextField("Card No*"),
+                  _buildTextField("Items*", (String value) {
+                    item.value = value;
+                  }),
+                  _buildTextField("Store*", (String value) {
+                    store.value = value;
+                  }),
+                  _buildTextField("Runner's Name*", (String value) {
+                    runner_name.value = value;
+                  }),
+                  _buildTextField("Amount*", (String value) {
+                    amount.value = value;
+                  }),
+                  _buildTextField("Card No*", (String value) {
+                    card_no.value = value;
+                  }),
                   _buildDateField(context),
                   SizedBox(height: height * 0.02),
                   // Save Button
@@ -67,7 +140,23 @@ class MaterialPurchaseDialog extends StatelessWidget {
                       child: Bounce(
                         duration: Duration(milliseconds: 300),
                         onPressed: (){
-
+                          Map<String, dynamic> jsonBody = {
+                            "material_purchase": [
+                              {
+                                "line_item_name": item.value,
+                                "store": store.value,
+                                "runners_name": runner_name.value,
+                                "amount": amount.value,
+                                "card_number": card_no.value,
+                                "transaction_date": date.value
+                              }
+                            ]
+                          };
+                          Home_Dom_I().addProducts(
+                              GetUserLocalStorageV2().token().toString(),
+                              context,
+                              jsonBody
+                          );
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -92,7 +181,7 @@ class MaterialPurchaseDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String label) {
+  Widget _buildTextField(String label, VoidCallback? onTap(String value)) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 6),
       child: Row(
@@ -110,6 +199,7 @@ class MaterialPurchaseDialog extends StatelessWidget {
           // Expandable TextField
           Expanded(
             child: TextField(
+              onChanged: (value) => onTap(value),
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -121,47 +211,5 @@ class MaterialPurchaseDialog extends StatelessWidget {
     );
   }
 
-
-  Widget _buildDateField(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center, // Align items in the center
-        children: [
-          // Label with fixed width
-          SizedBox(
-            width: 120, // Adjust width to match other labels
-            child: Text(
-              "Date*",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          SizedBox(width: 10), // Space between label and text field
-          // Expandable TextField
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                suffixIcon: Icon(Icons.calendar_month_outlined), // Calendar icon
-              ),
-              readOnly: true,
-              onTap: () async {
-                DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2100),
-                );
-                if (pickedDate != null) {
-                  print(pickedDate.toLocal().toString().split(' ')[0]);
-                }
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
 }

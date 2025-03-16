@@ -22,6 +22,7 @@ class HomePage extends HookConsumerWidget {
     final width = MediaQuery.of(context).size.width;
     final purchases = useState(GetMaterialResponse(statusCode: '', statusMessage: '', materialPurchaseList: null));
 
+    print(GetUserLocalStorageV2().token());
     var suggestions = [
       'United States', 'Germany', 'Canada', 'United Kingdom', 'France', 'Italy', 'Spain', 'Australia', 'India', 'China', 'Japan', 'Brazil', 'South Africa', 'Mexico', 'Argentina', 'Russia', 'Indonesia', 'Turkey', 'Saudi Arabia', 'Nigeria', 'Egypt',
     ];

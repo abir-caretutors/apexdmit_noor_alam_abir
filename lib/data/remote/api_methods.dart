@@ -19,6 +19,8 @@ class ApiService {
   /// Generic POST method
   Future<dynamic> post(String url, BuildContext context, {Map<String, String>? headers, dynamic body}) async {
     container.read(loadingProvider.notifier).state = true;
+    print(headers);
+    print(jsonEncode(body));
     final response = await http.post(
       Uri.parse('$url'),
       headers: headers ?? {'Content-Type': 'application/json'},

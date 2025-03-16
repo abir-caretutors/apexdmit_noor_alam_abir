@@ -8,4 +8,6 @@ abstract class APIUrls {
 
   static final String product = "${baseUrl}api/auth/interview/material-purchase?page=1";
 
+  static final String addProduct = "${baseUrl}api/auth/interview/material-purchase";
+
 }
