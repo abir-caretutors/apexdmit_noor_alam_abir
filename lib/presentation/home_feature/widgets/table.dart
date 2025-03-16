@@ -94,60 +94,57 @@ class CustomHorizontalDataTable extends StatelessWidget {
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
     var purchase = purchases.value.materialPurchaseList!.data![index];
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: <Widget>[
-          Container(
-            color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
-            width: 100,
-            height: 52,
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.centerLeft,
-            child: Text(purchase.lineItemName),
-          ),
-          Container(
-            color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
-            width: 100,
-            height: 52,
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.centerLeft,
-            child: Text(purchase.store),
-          ),
-          Container(
-            color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
-            width: 100,
-            height: 52,
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.centerLeft,
-            child: Text(purchase.runnersName),
-          ),
-          Container(
-            color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
-            width: 100,
-            height: 52,
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.centerLeft,
-            child: Text(purchase.amount.toString()),
-          ),
-          Container(
-            color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
-            width: 100,
-            height: 52,
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.centerLeft,
-            child: Text(purchase.cardNumber),
-          ),
-          Container(
-            color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
-            width: 300,
-            height: 52,
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.centerLeft,
-            child: Text(purchase.transactionDate.toString()),
-          ),
-        ],
-      ),
+    return Row(
+      children: <Widget>[
+        Container(
+          color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
+          width: 100,
+          height: 52,
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+          child: Text(purchase.lineItemName),
+        ),
+        Container(
+          color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
+          width: 100,
+          height: 52,
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+          child: Text(purchase.store),
+        ),
+        Container(
+          color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
+          width: 100,
+          height: 52,
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+          child: Text(purchase.runnersName),
+        ),
+        Container(
+          color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
+          width: 100,
+          height: 52,
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+          child: Text(purchase.amount.toString()),
+        ),
+        Container(
+          color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
+          width: 100,
+          height: 52,
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+          child: Text(purchase.cardNumber),
+        ),
+        Container(
+          color: (index % 2 != 0) ? Color(0xFFF5F7FA) : Colors.white,
+          width: 300,
+          height: 52,
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+          child: Text(purchase.transactionDate.toString()),
+        ),
+      ],
     );
   }
 }
