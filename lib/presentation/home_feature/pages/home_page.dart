@@ -1,8 +1,11 @@
 
 
+import 'dart:ui';
+
 import 'package:apexdmit_noor_alam_abir/data/local/local_storage.dart';
 import 'package:apexdmit_noor_alam_abir/data/remote/responses/get_material_response.dart';
 import 'package:apexdmit_noor_alam_abir/domain_infrastructure/home/home_dom_i.dart';
+import 'package:apexdmit_noor_alam_abir/presentation/auth_feature/pages/login_page.dart';
 import 'package:apexdmit_noor_alam_abir/presentation/home_feature/widgets/popup.dart';
 import 'package:apexdmit_noor_alam_abir/presentation/home_feature/widgets/table.dart';
 import 'package:data_table_2/data_table_2.dart';
@@ -95,7 +98,55 @@ class HomePage extends HookConsumerWidget {
 
                     Text('Material Purchase', style: TextStyle(fontSize: height * 0.025),),
 
-                    Icon(Icons.more_vert_sharp,),
+                    Bounce(
+                      duration: Duration(milliseconds: 300),
+                        onPressed: () async{
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false, // Optional: Close the dialog only by interacting with the menu
+                            builder: (BuildContext context) {
+                              return BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0), // Apply blur
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // Close the dialog when tapping outside
+                                    Navigator.pop(context);
+                                  },
+                                  child: SizedBox(),
+                                ),
+                              );
+                            },
+                          );
+                          showMenu(
+                            color: Color(0xFF2567E8),
+                            context: context,
+                            position: RelativeRect.fromLTRB(200, 100, 0, 0),
+                            items: [
+                              PopupMenuItem<String>(
+                                value: 'Option 1',
+                                onTap: (){
+                                  Navigator.pop(context);
+                                  SetUserLocalStorageV2().clearUser();
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => LoginPage()),
+                                  );
+                                },
+                                child: Container(
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.logout_outlined, color: Colors.white,),
+                                      Text(' Logout', style: TextStyle(color: Colors.white),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+
+                        },
+                        child: Icon(Icons.more_vert_sharp,)
+                    ),
                   ],
                 ),
               ),
@@ -107,15 +158,15 @@ class HomePage extends HookConsumerWidget {
                 child: SearchField(
 
                   onSearchTextChanged: (query) {
-                    final filter = suggestions
+                    final filter = purchases.value.materialPurchaseList!.data!
                         .where((element) =>
-                        element.toLowerCase().contains(query.toLowerCase()))
+                        element.lineItemName.toLowerCase().contains(query.toLowerCase()))
                         .toList();
                     return filter
-                        .map((e) => SearchFieldListItem<String>(e,
+                        .map((e) => SearchFieldListItem<String>(e.lineItemName,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: Text(e,
+                          child: Text(e.lineItemName,
                               style: TextStyle(fontSize: 24, color: Color(0xFF2567E8))),
                         )))
                         .toList();
@@ -125,7 +176,7 @@ class HomePage extends HookConsumerWidget {
                       selectedValue = x;
                   },
                   key: const Key('searchfield'),
-                  hint: 'Search by country name',
+                  hint: 'Search by Item Name',
                   itemHeight: 50,
                   searchInputDecoration:
                   SearchInputDecoration(
@@ -140,11 +191,11 @@ class HomePage extends HookConsumerWidget {
                       padding: const EdgeInsets.all(4),
                       border: Border.all(color: Color(0xFF2567E8)),
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  suggestions: suggestions
-                      .map((e) => SearchFieldListItem<String>(e,
+                  suggestions: purchases.value.materialPurchaseList!.data!
+                      .map((e) => SearchFieldListItem<String>(e.lineItemName,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Text(e,
+                        child: Text(e.lineItemName,
                             style: TextStyle(fontSize: 24, color: Color(0xFF2567E8))),
                       )))
                       .toList(),
